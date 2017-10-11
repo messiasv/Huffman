@@ -20,6 +20,9 @@ namespace Huffman
                 frequencyTable.Add(b);
             }
             Console.WriteLine(frequencyTable.ToString());
+
+            Forest forest = new Forest();
+            foreach(KeyValuePair<byte,int> kvp in frequencyTable) forest.Add(new BinaryTree(new Node(kvp.Key, kvp.Value)));
         }
     }
 }

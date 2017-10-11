@@ -8,14 +8,19 @@ namespace Huffman
 {
     class Node : IComparable
     {
-        private byte Symbol { get; set; }
-        private int Frequency { get; set; }
-        private Node Left { get; set; }
-        private Node Right { get; set; }
+        public byte Symbol { get; set; }
+        public int Frequency { get; set; }
+        public Node Left { get; set; }
+        public Node Right { get; set; }
 
         public Node(byte symbol, int frequency)
         {
             Symbol = symbol;
+            Frequency = frequency;
+        }
+
+        public Node(int frequency)
+        {
             Frequency = frequency;
         }
 
