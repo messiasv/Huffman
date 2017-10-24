@@ -26,6 +26,16 @@ namespace Huffman
 
             BinaryTree binaryTree = forest.GetUniqueTree();
             Console.WriteLine(binaryTree.ToString());
+
+            forest.Preorder(binaryTree.Root, new Code());
+            foreach (Byte b in forest.getCodeTable().Keys)
+            {
+                Console.WriteLine((char)b + " -> " + forest.getCodeTable()[b]);
+            }
+            foreach (Code c in forest.getDecodeTable().Keys)
+            {
+                Console.WriteLine(c + " -> " + (char)forest.getDecodeTable()[c]);
+            }
         }
     }
 }

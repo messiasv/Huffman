@@ -8,6 +8,15 @@ namespace Huffman
 {
     class Forest : List<BinaryTree>
     {
+        private Dictionary<Byte, Code> codeTable;
+        private Dictionary<Code, Byte> decodeTable;
+
+        public Forest()
+        {
+            codeTable = new Dictionary<byte, Code>();
+            decodeTable = new Dictionary<Code, byte>();
+        }
+
         public BinaryTree GetUniqueTree()
         {
             while (Count > 1) MergeTrees();
@@ -32,6 +41,37 @@ namespace Huffman
                 newbt = new BinaryTree(newNode);
                 Add(newbt);
             }
+        }
+
+        public void Preorder(Node node, Code huffCode)
+        {
+            if(node != null)
+            {
+                if(node.IsLeaf())
+                {
+                    codeTable.Add(node.Symbol, huffCode);
+                    decodeTable.Add(huffCode, node.Symbol);
+                    return;
+                }
+                Code _huffCodeL = new Code(); 
+                _huffCodeL.AddRange(huffCode);
+                Code _huffCodeR = new Code();
+                _huffCodeR.AddRange(huffCode);
+                _huffCodeL.Add(false);
+                Preorder(node.Left, _huffCodeL);
+                _huffCodeR.Add(true);
+                Preorder(node.Right, _huffCodeR);
+            }
+        }
+
+        public Dictionary<Byte, Code> getCodeTable()
+        {
+            return codeTable;
+        }
+
+        public Dictionary<Code, Byte> getDecodeTable()
+        {
+            return decodeTable;
         }
     }
 }
