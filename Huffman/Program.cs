@@ -28,14 +28,29 @@ namespace Huffman
             Console.WriteLine(binaryTree.ToString());
 
             forest.Preorder(binaryTree.Root, new Code());
-            foreach (Byte b in forest.getCodeTable().Keys)
+            Dictionary<Byte, Code> codeTable = forest.getCodeTable();
+            Dictionary<Code, Byte> decodeTable = forest.getDecodeTable();
+            foreach (Byte b in codeTable.Keys)
             {
-                Console.WriteLine((char)b + " -> " + forest.getCodeTable()[b]);
+                Console.WriteLine((char)b + " -> " + codeTable[b]);
             }
-            foreach (Code c in forest.getDecodeTable().Keys)
+            foreach (Code c in decodeTable.Keys)
             {
-                Console.WriteLine(c + " -> " + (char)forest.getDecodeTable()[c]);
+                Console.WriteLine(c + " -> " + (char)decodeTable[c]);
             }
+
+            int GetRequiredBytesNumber()
+            {
+                int size = 0;
+                foreach(Byte b in frequencyTable.Keys) size += frequencyTable[b] * codeTable[b].Count;
+                return size%8 == 0 ? size/8 : size/8 + 1;
+            }
+
+            int RequiredBytesNumber = GetRequiredBytesNumber();
+
+            Byte[] compressedData = new Byte[RequiredBytesNumber];
+            Console.WriteLine("testStringSize: " + testString.Length); // original size
+            Console.WriteLine("compressedStringSize: " + RequiredBytesNumber); // seeked size
         }
     }
 }
