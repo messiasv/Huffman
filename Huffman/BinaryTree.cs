@@ -19,5 +19,10 @@ namespace Huffman
         {
             return Root.CompareTo((obj as BinaryTree).Root);
         }
+
+        public override string ToString()
+        {
+            return Root.ToString();
+        }
     }
 }

@@ -33,5 +33,23 @@ namespace Huffman
         {
             return Frequency <= (obj as Node).Frequency ? -1 : 1;
         }
+
+        public override string ToString()
+        {
+            string _str = "";
+            if(this != null)
+            {
+                if(Left != null)
+                {
+                    _str += Left.ToString();
+                }
+                _str += "(" + (char)Symbol + ": " + Frequency + ")";
+                if(Right != null)
+                {
+                    _str += Right.ToString();
+                }
+            }
+            return _str;
+        }
     }
 }
