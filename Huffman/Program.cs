@@ -51,6 +51,47 @@ namespace Huffman
             Byte[] compressedData = new Byte[RequiredBytesNumber];
             Console.WriteLine("testStringSize: " + testString.Length); // original size
             Console.WriteLine("compressedStringSize: " + RequiredBytesNumber); // seeked size
+
+            List<bool> compressedDataBoolean = new List<bool>();
+            foreach(Byte b in testString)
+            {
+                compressedDataBoolean.AddRange(codeTable[b]);
+            }
+
+            Byte[] BooleanListToByteArray(List<bool> boolList)
+            {
+                Byte[] _compressedData = new Byte[RequiredBytesNumber];
+                Byte curr = 0;
+                int i = 0, j = 0;
+                Boolean b;
+                while(b = boolList.Last()) { // reversed : (
+                    boolList.Remove(b);
+                    if (i == 0) {
+                        curr = new byte();
+                        curr = 0x0;
+                    }
+                    if(b)
+                    {
+                        curr = (Byte)((1 << i) | curr);
+                    } else
+                    {
+                        curr = (Byte)((0 << i) | curr);
+                    }
+                    if (i == 7)
+                    {
+                        _compressedData[RequiredBytesNumber - 1 - j] = curr;
+                        j++;
+                        i = 0;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                return _compressedData;
+            }
+
+            compressedData = BooleanListToByteArray(compressedDataBoolean);
         }
     }
 }
