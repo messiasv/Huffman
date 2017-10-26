@@ -12,7 +12,7 @@ namespace Huffman
         private Dictionary<Byte, Code> codeTable;
         private Dictionary<Code, Byte> decodeTable;
         private Byte[] byteArray;
-        int byteArrayElements;
+        int byteArrayElement;
 
         public Forest()
         {
@@ -30,7 +30,7 @@ namespace Huffman
         {
             if(Count > 1)
             {
-                Sort();
+                Sort((_bt1, _bt2) => _bt1.CompareTo(_bt2));
                 BinaryTree bt1, bt2, newbt;
                 bt1 = this.First();
                 RemoveAt(0);
@@ -66,27 +66,60 @@ namespace Huffman
                 Preorder(node.Right, _huffCodeR);
             }
         }
-        
-        public void ProduceByteArray(BitArray bitArray,Node root, Node node, int size, Boolean firstExec, int start)
-        {
-            if (firstExec)
-            {
-                byteArray = new Byte[size];
-                byteArrayElements = 0;
-            }
 
-            if (node != null && start <= bitArray.Count)
-            {
-                if (node.IsLeaf())
+        //public void ProduceByteArray(BitArray bitArray, Node root, Node node, int size, Boolean firstExec, int start)
+        //{
+        //    if (firstExec)
+        //    {
+        //        byteArray = new Byte[size];
+        //        byteArrayElements = 0;
+        //    }
+
+        //    if (node != null && start <= bitArray.Count)
+        //    {
+        //        if (node.IsLeaf())
+        //        {
+        //            byteArray[byteArrayElements] = node.Symbol;
+        //            byteArrayElements++;
+        //            if (start < bitArray.Count) ProduceByteArray(bitArray, root, root, size, false, start);
+        //        }
+        //        else
+        //        {
+        //            if (!bitArray[bitArray.Count - start - 1]) ProduceByteArray(bitArray, root, node.Left, size, false, start + 1);
+        //            else ProduceByteArray(bitArray, root, node.Right, size, false, start + 1);
+        //        }
+        //    }
+        //}
+
+        public void ProduceByteArrayNew(BitArray bitArray, Node root, int size, int start)
+        {
+            byteArray = new Byte[size];
+            byteArrayElement = 0;
+            Node node = root;
+                
+            while(byteArrayElement < size) {
+                if (node != null)
                 {
-                    byteArray[byteArrayElements] = node.Symbol;
-                    byteArrayElements++;
-                    if(start < bitArray.Count) ProduceByteArray(bitArray, root, root, size, false, start);
-                }
-                else
-                {
-                    if (!bitArray[bitArray.Count - start - 1]) ProduceByteArray(bitArray, root, node.Left, size, false, start + 1);
-                    else ProduceByteArray(bitArray, root, node.Right, size, false, start + 1);
+                    if (node.IsLeaf())
+                    {
+                        byteArray[byteArrayElement] = node.Symbol;
+                        byteArrayElement++;
+                        if (start < bitArray.Count) node = root;
+                        else return;
+                    }
+                    else if(start < bitArray.Count)
+                    {
+                        if (!bitArray[bitArray.Count - start - 1])
+                        {
+                            node = node.Left;
+                            start++;
+                        }
+                        else
+                        {
+                            node = node.Right;
+                            start++;
+                        }
+                    }
                 }
             }
         }

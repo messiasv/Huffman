@@ -31,7 +31,8 @@ namespace Huffman
 
         public int CompareTo(object obj)
         {
-            return Frequency <= (obj as Node).Frequency ? -1 : 1;
+            //return Frequency <= (obj as Node).Frequency ? -1 : 1;
+            return Frequency.CompareTo((obj as Node).Frequency);
         }
 
         public override string ToString()
