@@ -37,7 +37,7 @@ namespace Huffman
 
                 /*
                  * This function is in charge of getting a unique binary tree from all the binary trees contained in the Forest.
-                 * While the Forest has several trees, we remove the two trees containing the two nodes that have the lowest frequency 
+                 * While the Forest has several trees, we remove the two trees containing the two nodes that have the lowest frequency
                  * and assign them to the left and right nodes of the root of a new BinaryTree that we finally had to the forest.
                  */
                 BinaryTree binaryTree = forest.GetUniqueTree();
@@ -162,7 +162,7 @@ namespace Huffman
 
                 forest2.Preorder(binaryTree2.Root, new Code());
                 /*
-                 * To uncompress our data, we must parse our compressed data. For an easier writing of the code, We will parse 
+                 * To decompress our data, we must parse our compressed data. For an easier writing of the code, We will parse
                  * it from a BitArray, so that we don't have to jump from byte to byte.
                  */
                 BitArray bitArray = new BitArray(data.compressedData);
