@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace Huffman
     {
         private Dictionary<Byte, Code> codeTable;
         private Dictionary<Code, Byte> decodeTable;
+        private Byte[] byteArray;
+        int byteArrayElements;
 
         public Forest()
         {
@@ -63,6 +66,30 @@ namespace Huffman
                 Preorder(node.Right, _huffCodeR);
             }
         }
+        
+        public void ProduceByteArray(BitArray bitArray,Node root, Node node, int size, Boolean firstExec, int start)
+        {
+            if (firstExec)
+            {
+                byteArray = new Byte[size];
+                byteArrayElements = 0;
+            }
+
+            if (node != null && start <= bitArray.Count)
+            {
+                if (node.IsLeaf())
+                {
+                    byteArray[byteArrayElements] = node.Symbol;
+                    byteArrayElements++;
+                    if(start < bitArray.Count) ProduceByteArray(bitArray, root, root, size, false, start);
+                }
+                else
+                {
+                    if (!bitArray[bitArray.Count - start - 1]) ProduceByteArray(bitArray, root, node.Left, size, false, start + 1);
+                    else ProduceByteArray(bitArray, root, node.Right, size, false, start + 1);
+                }
+            }
+        }
 
         public Dictionary<Byte, Code> getCodeTable()
         {
@@ -72,6 +99,11 @@ namespace Huffman
         public Dictionary<Code, Byte> getDecodeTable()
         {
             return decodeTable;
+        }
+
+        public Byte[] GetByteArray()
+        {
+            return byteArray;
         }
     }
 }

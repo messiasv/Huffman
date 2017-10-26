@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,6 +14,7 @@ namespace Huffman
         static void Main(string[] args)
         {
             byte[] testString = System.IO.File.ReadAllBytes(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"\..\..\testString.txt");
+            //byte[] testString = { 65, 66, 67, 154, 42, 68, 65, 26, 24, 16, 94, 46 };
             Console.WriteLine(testString.Length);
             FrequencyTable frequencyTable = new FrequencyTable();
             foreach(byte b in testString)
@@ -57,6 +59,7 @@ namespace Huffman
             {
                 compressedDataBoolean.AddRange(codeTable[b]);
             }
+            int sizeDataUncompressed = compressedDataBoolean.Count;
 
             Byte[] BooleanListToByteArray(List<bool> boolList)
             {
@@ -64,8 +67,9 @@ namespace Huffman
                 Byte curr = 0;
                 int i = 0, j = 0;
                 Boolean b;
-                while(b = boolList.Last()) { // reversed : (
-                    boolList.Remove(b);
+                while(boolList.Count>0) { // reversed : ( --> not anymore
+                    b = boolList.Last();
+                    boolList.RemoveAt(boolList.Count - 1);
                     if (i == 0) {
                         curr = new byte();
                         curr = 0x0;
@@ -79,7 +83,7 @@ namespace Huffman
                     }
                     if (i == 7)
                     {
-                        _compressedData[RequiredBytesNumber - 1 - j] = curr;
+                        _compressedData[j] = curr;
                         j++;
                         i = 0;
                     }
@@ -88,10 +92,44 @@ namespace Huffman
                         i++;
                     }
                 }
+                if(i != 0) _compressedData[j] = curr;
                 return _compressedData;
             }
 
             compressedData = BooleanListToByteArray(compressedDataBoolean);
+            List<KeyValuePair<Byte, int>> frequency = frequencyTable.ToList();
+            // decompress
+            Forest forest2 = new Forest();
+            int necessarybytes = 0;
+            foreach (KeyValuePair<Byte,int> kvp in frequency) {
+                forest2.Add(new BinaryTree(new Node(kvp.Key, kvp.Value)));
+                necessarybytes += kvp.Value;
+            }
+            Console.WriteLine(testString.Count());
+            Console.WriteLine(necessarybytes);
+
+            BinaryTree binaryTree2 = forest2.GetUniqueTree();
+            Console.WriteLine(binaryTree2.ToString());
+
+            forest2.Preorder(binaryTree2.Root, new Code());
+            BitArray bitArray = new BitArray(compressedData);
+            Console.WriteLine(sizeDataUncompressed);
+            Console.WriteLine(bitArray.Count);
+            int start = 0;
+            int blop = sizeDataUncompressed % 8;
+            Console.WriteLine(blop);
+            if (!(blop == 0))
+            {
+                start = 8 - blop;
+            }
+            Console.WriteLine(start);
+            //int start = sizeDataUncompressed % 8 == 0 ? 0 : 8 - sizeDataUncompressed % 8;
+            forest2.ProduceByteArray(bitArray, binaryTree2.Root, binaryTree2.Root, necessarybytes, true, start);
+            Byte[] finalArray = forest2.GetByteArray();
+            for(int i =0; i< finalArray.Count(); i++)
+            {
+                if (finalArray[i] != testString[i]) Console.Write("not working");
+            }
         }
     }
 }
